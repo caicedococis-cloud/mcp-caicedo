@@ -1,0 +1,36 @@
+{
+  "name": "mcp-caicedo",
+  "version": "1.0.0",
+  "description": "Solana copy-trading MCP server",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/caicedococis-cloud/mcp-caicedo.git"
+  },
+  "bugs": {
+    "url": "https://github.com/caicedococis-cloud/mcp-caicedo/issues"
+  },
+  "homepage": "https://github.com/caicedococis-cloud/mcp-caicedo#readme",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.31.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.3",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.2"
+  },
+  "type": "module",
+  "private": true,
+  "bin": {
+    "mcp-caicedo": "dist/server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

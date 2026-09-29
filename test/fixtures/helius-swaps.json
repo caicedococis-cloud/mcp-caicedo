@@ -1,0 +1,90 @@
+[
+  {
+    "description": "Jupiter buy: wallet spends 1.5 SOL for BONK (parsed swap event)",
+    "signature": "5buySigJupiterSolToBonk111111111111111111111111111111111111111",
+    "timestamp": 1790000300,
+    "type": "SWAP",
+    "source": "JUPITER",
+    "feePayer": "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU",
+    "transactionError": null,
+    "nativeTransfers": [
+      { "fromUserAccount": "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU", "toUserAccount": "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4", "amount": 1500000000 }
+    ],
+    "tokenTransfers": [
+      { "fromUserAccount": "PoolBonk11111111111111111111111111111111111", "toUserAccount": "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU", "mint": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263", "tokenAmount": 12345678.5 }
+    ],
+    "events": {
+      "swap": {
+        "nativeInput": { "account": "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU", "amount": "1500000000" },
+        "nativeOutput": null,
+        "tokenInputs": [],
+        "tokenOutputs": [
+          { "userAccount": "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU", "tokenAccount": "BonkAta1111111111111111111111111111111111111", "mint": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263", "rawTokenAmount": { "tokenAmount": "1234567850000", "decimals": 5 } }
+        ]
+      }
+    }
+  },
+  {
+    "description": "Raydium sell without swap event: BONK -> WSOL, plus the native wrap noise that must not double count",
+    "signature": "4sellSigRaydiumBonkToWsol11111111111111111111111111111111111111",
+    "timestamp": 1790000200,
+    "type": "SWAP",
+    "source": "RAYDIUM",
+    "feePayer": "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU",
+    "transactionError": null,
+    "nativeTransfers": [
+      { "fromUserAccount": "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU", "toUserAccount": "WsolAta11111111111111111111111111111111111111", "amount": 2039280 }
+    ],
+    "tokenTransfers": [
+      { "fromUserAccount": "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU", "toUserAccount": "PoolBonk11111111111111111111111111111111111", "mint": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263", "tokenAmount": 5000000 },
+      { "fromUserAccount": "PoolBonk11111111111111111111111111111111111", "toUserAccount": "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU", "mint": "So11111111111111111111111111111111111111112", "tokenAmount": 0.62 }
+    ],
+    "events": {}
+  },
+  {
+    "description": "Failed transaction: must be ignored",
+    "signature": "3failedSig111111111111111111111111111111111111111111111111111111",
+    "timestamp": 1790000150,
+    "type": "SWAP",
+    "source": "JUPITER",
+    "transactionError": { "error": "Slippage tolerance exceeded" },
+    "nativeTransfers": [],
+    "tokenTransfers": [],
+    "events": {}
+  },
+  {
+    "description": "Token to USDC sell via swap event",
+    "signature": "2sellSigWifToUsdc1111111111111111111111111111111111111111111111",
+    "timestamp": 1790000100,
+    "type": "SWAP",
+    "source": "ORCA",
+    "transactionError": null,
+    "nativeTransfers": [],
+    "tokenTransfers": [],
+    "events": {
+      "swap": {
+        "nativeInput": null,
+        "nativeOutput": null,
+        "tokenInputs": [
+          { "userAccount": "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU", "tokenAccount": "WifAta", "mint": "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm", "rawTokenAmount": { "tokenAmount": "250000000", "decimals": 6 } }
+        ],
+        "tokenOutputs": [
+          { "userAccount": "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU", "tokenAccount": "UsdcAta", "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v", "rawTokenAmount": { "tokenAmount": "512340000", "decimals": 6 } }
+        ]
+      }
+    }
+  },
+  {
+    "description": "Wallet only receives a token (someone else's swap routed through it): not a trade",
+    "signature": "1receiveOnlySig11111111111111111111111111111111111111111111111",
+    "timestamp": 1790000050,
+    "type": "SWAP",
+    "source": "JUPITER",
+    "transactionError": null,
+    "nativeTransfers": [],
+    "tokenTransfers": [
+      { "fromUserAccount": "Other111111111111111111111111111111111111111", "toUserAccount": "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU", "mint": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263", "tokenAmount": 10 }
+    ],
+    "events": {}
+  }
+]

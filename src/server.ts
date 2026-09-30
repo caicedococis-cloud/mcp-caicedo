@@ -1,5 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
+import { registerTrackerTools, type TrackerDeps } from "./tracker/tools.js";
 
 export const SERVER_NAME = "mcp-caicedo";
 export const SERVER_VERSION = "0.1.0";
@@ -12,7 +13,12 @@ export const healthOutputSchema = {
   timestamp: z.string(),
 };
 
-export function createServer(): McpServer {
+export interface ServerDeps {
+  /** Read-only wallet tracker tools; omitted in tests that only need health. */
+  tracker?: TrackerDeps;
+}
+
+export function createServer(deps: ServerDeps = {}): McpServer {
   const server = new McpServer({ name: SERVER_NAME, version: SERVER_VERSION });
 
   server.registerTool(
@@ -38,6 +44,8 @@ export function createServer(): McpServer {
       };
     },
   );
+
+  if (deps.tracker) registerTrackerTools(server, deps.tracker);
 
   return server;
 }

@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
   applyPreset,
-  buySizeSol,
   defaultSettings,
   PRESETS,
   SETTINGS_META,
@@ -28,13 +27,5 @@ describe("settings", () => {
 
   it("rechaza valores fuera de rango", () => {
     expect(() => updateSettings(defaultSettings(), { stopLossPct: 150 })).toThrow();
-  });
-
-  it("calcula el tamaño de compra según el modo y respeta el máximo", () => {
-    const base = { ...defaultSettings(), maxBuySol: 1 };
-    expect(buySizeSol({ ...base, sizeMode: "fixed", tradeSizeSol: 0.3 }, 50, 10)).toBe(0.3);
-    expect(buySizeSol({ ...base, sizeMode: "percentOfLeader", sizePercent: 10 }, 5, 10)).toBe(0.5);
-    expect(buySizeSol({ ...base, sizeMode: "percentOfCapital", sizePercent: 5 }, 5, 10)).toBe(0.5);
-    expect(buySizeSol({ ...base, sizeMode: "percentOfLeader", sizePercent: 50 }, 100, 10)).toBe(1);
   });
 });

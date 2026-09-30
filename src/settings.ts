@@ -20,6 +20,7 @@ export const SettingsSchema = z.object({
   tradeSizeSol: z.number().positive(),
   sizePercent: z.number().positive().max(100),
   maxBuySol: z.number().positive(),
+  dailyCapSol: z.number().positive(),
 
   // --- Riesgo ---
   maxOpenPositions: z.number().int().min(1).max(100),
@@ -61,6 +62,7 @@ export const PRESETS: Record<PresetName, PresetValues> = {
     tradeSizeSol: 0.1,
     sizePercent: 1.5,
     maxBuySol: 0.25,
+    dailyCapSol: 1,
     maxOpenPositions: 4,
     maxDailyLossSol: 0.5,
     stopLossPct: 20,
@@ -89,6 +91,7 @@ export const PRESETS: Record<PresetName, PresetValues> = {
     tradeSizeSol: 0.25,
     sizePercent: 2.5,
     maxBuySol: 0.5,
+    dailyCapSol: 3,
     maxOpenPositions: 8,
     maxDailyLossSol: 1,
     stopLossPct: 30,
@@ -117,6 +120,7 @@ export const PRESETS: Record<PresetName, PresetValues> = {
     tradeSizeSol: 0.5,
     sizePercent: 5,
     maxBuySol: 1.5,
+    dailyCapSol: 10,
     maxOpenPositions: 15,
     maxDailyLossSol: 3,
     stopLossPct: 40,
@@ -163,17 +167,6 @@ export function updateSettings(current: Settings, patch: Partial<Settings>): Set
     if (changed) next.preset = "personalizado";
   }
   return next;
-}
-
-/** Tamaño de compra en SOL para una señal, respetando el máximo por compra. */
-export function buySizeSol(s: Settings, leaderSolAmount: number, equitySol: number): number {
-  const raw =
-    s.sizeMode === "fixed"
-      ? s.tradeSizeSol
-      : s.sizeMode === "percentOfLeader"
-        ? (leaderSolAmount * s.sizePercent) / 100
-        : (equitySol * s.sizePercent) / 100;
-  return Math.max(0, Math.min(raw, s.maxBuySol));
 }
 
 export interface SettingMeta {
@@ -254,6 +247,15 @@ export const SETTINGS_META: Record<SettingKey, SettingMeta> = {
     unit: "SOL",
     min: 0.01,
     step: 0.01,
+  },
+  dailyCapSol: {
+    label: "Gasto diario máx.",
+    help: "SOL que el bot puede invertir en compras en un mismo día (UTC). Si una racha de señales llega de golpe, este tope evita que todo el capital entre el mismo día.",
+    group: "tamaño",
+    level: "advanced",
+    unit: "SOL",
+    min: 0.01,
+    step: 0.1,
   },
   maxOpenPositions: {
     label: "Posiciones abiertas máx.",

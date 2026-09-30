@@ -59,6 +59,37 @@ export class PaperTrader {
     return trade.side === "buy" ? this.copyBuy(trade, leaderPrice) : this.copySell(trade, leaderPrice);
   }
 
+  /** Changes sizing and limits for future trades. Balances and positions are kept. */
+  updateConfig(overrides: Partial<Omit<PaperConfig, "startingBalanceSol">>): void {
+    Object.assign(this.config, resolvePaperConfig({ ...this.config, ...overrides }));
+  }
+
+  /**
+   * Closes our whole position in a token copied from `wallet` at `priceSol`, without
+   * a leader trade (stop loss, take profit, manual close). Leader holdings are untouched.
+   */
+  closePosition(wallet: string, tokenMint: string, priceSol: number, atMs: number, reference: string): ProcessResult {
+    const k = key(wallet, tokenMint);
+    const position = this.positions.get(k);
+    const trade: WalletTrade = { signature: reference, wallet, tokenMint, side: "sell", tokenAmount: 0, solAmount: 0, timestamp: atMs };
+    if (!position || !(priceSol > 0)) return this.skip(trade, "no_position");
+    this.lastPrices.set(tokenMint, priceSol);
+    const price = priceSol * (1 - this.config.slippageBps / 10_000);
+    const proceeds = round9(position.tokenAmount * price);
+    const fee = this.config.feeSol;
+    this.balanceSol = round9(this.balanceSol + proceeds - fee);
+    this.positions.delete(k);
+    return this.fill(trade, {
+      side: "sell",
+      tokenAmount: position.tokenAmount,
+      solAmount: proceeds,
+      price,
+      leaderPrice: priceSol,
+      realizedPnlSol: round9(proceeds - position.costBasisSol - fee),
+      limitedBy: [],
+    });
+  }
+
   /** Processes trades in timestamp order. */
   processAll(trades: WalletTrade[]): ProcessResult[] {
     return [...trades].sort((a, b) => a.timestamp - b.timestamp).map((t) => this.process(t));

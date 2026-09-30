@@ -274,3 +274,23 @@ describe("persistence", () => {
     expect(t.summary(T0).balanceSol).toBe(3);
   });
 });
+
+describe("PaperTrader extras para el motor de copia", () => {
+  it("cierra una posición sin operación del líder y deja intactas sus tenencias", () => {
+    const t = new PaperTrader({ sizing: { mode: "fixed", sol: 1 }, maxPerTradeSol: 1, slippageBps: 0, feeSol: 0 });
+    t.process({ signature: "b1", wallet: "L", tokenMint: "M", side: "buy", tokenAmount: 100, solAmount: 1, timestamp: 0 });
+    const r = t.closePosition("L", "M", 0.02, 1, "exit:tp");
+    expect(r.status).toBe("filled");
+    if (r.status === "filled") expect(r.fill.realizedPnlSol).toBeCloseTo(1);
+    expect(t.getPositions()).toHaveLength(0);
+    expect(t.closePosition("L", "M", 0.02, 2, "exit:again").status).toBe("skipped");
+  });
+
+  it("actualiza tamaño y límites sin reiniciar el saldo", () => {
+    const t = new PaperTrader({ startingBalanceSol: 5 });
+    t.updateConfig({ sizing: { mode: "percentOfBalance", percent: 10 }, maxPerTradeSol: 2 });
+    expect(t.config.sizing).toEqual({ mode: "percentOfBalance", percent: 10 });
+    expect(t.summary().balanceSol).toBe(5);
+    expect(() => t.updateConfig({ maxPerTradeSol: -1 })).toThrow();
+  });
+});
